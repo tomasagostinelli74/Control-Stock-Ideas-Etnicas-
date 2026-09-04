@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: control-stock-ideas-etnicas
+    runtime: static
+    buildCommand: "true"
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
