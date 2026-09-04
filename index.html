@@ -6,236 +6,221 @@
 <title>Control de Stock — Ideas Étnicas</title>
 <style>
   :root{
-    --bg:#f4f5f7; --panel:#ffffff; --border:#dde1e6; --text:#1c2126; --muted:#6b7280;
-    --accent:#2563eb; --accent-dark:#1d4ed8; --ok:#15803d; --ok-bg:#dcfce7;
-    --bad:#b91c1c; --bad-bg:#fee2e2; --warn:#92400e; --warn-bg:#fef3c7;
-    --neutral-bg:#eef0f3;
+    --bg:#f6f6fb; --panel:#ffffff; --border:#e7e7f0; --text:#1a1b25; --muted:#6c6f85;
+    --accent:#4f46e5; --accent-dark:#4338ca; --accent-bg:#eef0ff;
+    --ok:#0f8a5f; --ok-bg:#e3f8ee;
+    --bad:#c0263d; --bad-bg:#fde8ea;
+    --warn:#b5720c; --warn-bg:#fdf1dc;
+    --neutral-bg:#f1f1f7;
+    --shadow:0 1px 2px rgba(20,20,50,.04), 0 4px 16px rgba(20,20,50,.05);
+    --radius:16px;
   }
   *{box-sizing:border-box;}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
-  header.app{padding:20px 28px;background:var(--panel);border-bottom:1px solid var(--border);}
-  header.app h1{margin:0 0 4px;font-size:20px;}
-  header.app p{margin:0;color:var(--muted);font-size:13px;}
-  nav.steps{display:flex;gap:0;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto;}
-  nav.steps button{border:none;background:none;padding:14px 18px;font-size:13.5px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-weight:600;}
-  nav.steps button.active{color:var(--accent);border-bottom-color:var(--accent);}
-  nav.steps button:disabled{color:#c3c8ce;cursor:not-allowed;}
-  main{max-width:1280px;margin:0 auto;padding:24px 28px 80px;}
-  section.step{display:none;}
-  section.step.active{display:block;}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
-  .card h2{margin:0 0 4px;font-size:16px;}
-  .card h3{margin:0 0 8px;font-size:14px;}
-  .card .hint{color:var(--muted);font-size:12.5px;margin:0 0 14px;}
-  .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
-  .file-slot{border:1.5px dashed var(--border);border-radius:8px;padding:14px;text-align:left;}
-  .file-slot.filled{border-style:solid;border-color:var(--accent);background:#f4f8ff;}
-  .file-slot label{display:block;font-weight:700;font-size:13px;margin-bottom:6px;}
-  .file-slot input[type=file]{font-size:12px;width:100%;}
-  .file-slot .filename{font-size:12px;color:var(--accent-dark);margin-top:6px;word-break:break-all;}
-  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;}
-  .field{display:flex;flex-direction:column;gap:4px;min-width:150px;}
-  .field label{font-size:12px;font-weight:600;color:var(--muted);}
-  select,input[type=text],input[type=number],input[type=date]{padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fff;color:var(--text);}
-  button.btn{padding:9px 18px;border-radius:7px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+  header.app{padding:36px 28px 22px;text-align:center;}
+  header.app h1{margin:0 0 8px;font-size:26px;letter-spacing:-0.01em;}
+  header.app p{margin:0 auto;color:var(--muted);font-size:14.5px;max-width:560px;line-height:1.5;}
+  main{max-width:920px;margin:0 auto;padding:0 20px 90px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:26px 28px;margin-bottom:20px;box-shadow:var(--shadow);}
+  .card h2{margin:0 0 4px;font-size:17px;}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 16px;line-height:1.5;}
+  .row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:160px;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--muted);}
+  select,input[type=text],input[type=number],input[type=date]{padding:9px 11px;border:1px solid var(--border);border-radius:9px;font-size:14px;background:#fff;color:var(--text);font-family:inherit;}
+  select:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  button.btn{padding:12px 22px;border-radius:11px;border:none;background:var(--accent);color:#fff;font-size:14.5px;font-weight:650;cursor:pointer;transition:background .15s,transform .06s;}
   button.btn:hover{background:var(--accent-dark);}
-  button.btn.secondary{background:#fff;color:var(--accent);}
-  button.btn.ghost{background:none;border-color:var(--border);color:var(--text);}
-  button.btn:disabled{opacity:.45;cursor:not-allowed;}
-  button.btn.small{padding:4px 10px;font-size:12px;border-radius:6px;}
-  .actions{display:flex;justify-content:space-between;margin-top:20px;}
-  table{border-collapse:collapse;width:100%;font-size:12.8px;}
-  th,td{padding:7px 9px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;}
-  th{background:var(--neutral-bg);position:sticky;top:0;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);white-space:nowrap;}
-  .table-wrap{max-height:560px;overflow:auto;border:1px solid var(--border);border-radius:8px;}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+  button.btn:active{transform:scale(.98);}
+  button.btn.secondary{background:var(--accent-bg);color:var(--accent-dark);}
+  button.btn.secondary:hover{background:#e0e2ff;}
+  button.btn.ghost{background:none;color:var(--muted);border:1px solid var(--border);}
+  button.btn.ghost:hover{background:var(--neutral-bg);}
+  button.btn.big{width:100%;padding:16px 22px;font-size:16px;border-radius:13px;}
+  button.btn:disabled{opacity:.4;cursor:not-allowed;}
+  button.chipbtn{border:none;background:none;cursor:pointer;font:inherit;}
+
+  .dropzones{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;}
+  .dropzone{position:relative;border:1.5px dashed #c7c9de;border-radius:13px;padding:18px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;background:#fbfbfe;}
+  .dropzone:hover{border-color:var(--accent);background:var(--accent-bg);}
+  .dropzone.dragover{border-color:var(--accent);background:var(--accent-bg);}
+  .dropzone.filled{border-style:solid;border-color:var(--ok);background:var(--ok-bg);}
+  .dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .dropzone .ico{font-size:26px;display:block;margin-bottom:6px;}
+  .dropzone .lbl{font-weight:700;font-size:13.5px;display:block;}
+  .dropzone .sub{font-size:11.5px;color:var(--muted);display:block;margin-top:4px;}
+  .dropzone .filename{font-size:11.5px;color:var(--ok);margin-top:6px;word-break:break-all;font-weight:600;}
+
+  details.advanced{margin-top:18px;border-top:1px solid var(--border);padding-top:14px;}
+  details.advanced > summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);list-style:none;user-select:none;}
+  details.advanced > summary::-webkit-details-marker{display:none;}
+  details.advanced > summary:before{content:"⚙ ";}
+  details.advanced > summary:after{content:" ▸";font-size:11px;}
+  details.advanced[open] > summary:after{content:" ▾";}
+  details.advanced .inner{margin-top:16px;}
+
+  table{border-collapse:collapse;width:100%;font-size:13px;}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle;}
+  td.num, th.num{text-align:right;font-variant-numeric:tabular-nums;}
+  th{background:var(--neutral-bg);position:sticky;top:0;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);white-space:nowrap;}
+  tbody tr:nth-child(even){background:#fbfbfe;}
+  tbody tr:hover{background:var(--accent-bg);}
+  .table-wrap{max-height:600px;overflow:auto;border:1px solid var(--border);border-radius:13px;}
+
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
   .badge.ok{background:var(--ok-bg);color:var(--ok);}
   .badge.bad{background:var(--bad-bg);color:var(--bad);}
   .badge.warn{background:var(--warn-bg);color:var(--warn);}
   .badge.neutral{background:var(--neutral-bg);color:var(--muted);}
-  .filesection{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:14px;}
-  .filesection h3{margin:0 0 10px;font-size:14px;}
-  .mode-pills{display:flex;gap:6px;margin-bottom:10px;}
-  .mode-pills button{padding:6px 12px;font-size:12px;border-radius:20px;border:1px solid var(--border);background:#fff;cursor:pointer;}
-  .mode-pills button.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .preview{font-size:11.5px;color:var(--muted);margin-top:8px;}
-  .warning-box{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 14px;font-size:12.5px;margin-bottom:14px;}
-  .error-box{background:var(--bad-bg);color:var(--bad);border-radius:8px;padding:10px 14px;font-size:12.5px;margin-bottom:14px;}
-  .sheet-list label{display:flex;gap:6px;align-items:center;font-size:12.5px;margin:3px 0;font-weight:400;}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;}
-  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
-  .kpi .n{font-size:22px;font-weight:800;}
-  .kpi .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;}
-  footer.note{text-align:center;color:var(--muted);font-size:11.5px;margin-top:30px;}
-  .small{font-size:11.5px;color:var(--muted);}
-  .diff-pos{color:var(--ok);font-weight:700;}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:22px;}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:var(--shadow);}
+  .stat .n{font-size:28px;font-weight:800;line-height:1.1;}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:3px;}
+  .stat.ok .n{color:var(--ok);}
+  .stat.bad .n{color:var(--bad);}
+  .stat.warn .n{color:var(--warn);}
+
+  .error-box{background:var(--bad-bg);color:var(--bad);border-radius:11px;padding:12px 16px;font-size:13px;margin-bottom:14px;}
+  .warning-box{background:var(--warn-bg);color:var(--warn);border-radius:11px;padding:12px 16px;font-size:13px;margin-bottom:14px;}
+
+  .review-item{border:1px solid var(--border);border-radius:13px;padding:16px 18px;margin-bottom:12px;}
+  .review-item .q{font-size:14px;margin:0 0 10px;}
+  .review-item .q b{color:var(--accent-dark);}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--neutral-bg);border-radius:20px;padding:7px 8px 7px 14px;font-size:13px;}
+  .chip button{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1;padding:2px;}
+  .chip.pick{background:var(--accent-bg);color:var(--accent-dark);cursor:pointer;border:none;font:inherit;padding:7px 14px;font-weight:600;}
+  .chip.pick:hover{background:#dfe1ff;}
+  .chip.skip{background:none;border:1px dashed var(--border);color:var(--muted);cursor:pointer;font:inherit;padding:7px 14px;}
+
+  .link-edit{background:var(--neutral-bg);border-radius:12px;padding:14px 16px;margin-top:-4px;margin-bottom:6px;}
+  .link-edit .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .link-edit h4{margin:0 0 6px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
+  .link-edit input[type=text]{width:100%;font-size:12.5px;padding:6px 9px;margin-top:6px;}
+  .link-edit .chips{max-height:90px;overflow-y:auto;}
+  tr.excluida td{opacity:.5;}
+  .code-cell{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:var(--muted);}
+  .diff-pos{color:var(--warn);font-weight:700;}
   .diff-neg{color:var(--bad);font-weight:700;}
   .diff-zero{color:var(--muted);}
-  .chips{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0;}
-  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--neutral-bg);border-radius:14px;padding:3px 8px 3px 10px;font-size:11.5px;}
-  .chip button{border:none;background:none;cursor:pointer;color:var(--muted);font-size:13px;line-height:1;padding:0;}
-  .chip.suggest{background:#fff;border:1px dashed var(--accent);color:var(--accent-dark);cursor:pointer;}
-  .link-box{min-width:260px;}
-  .link-box input[type=text]{width:100%;font-size:12px;padding:5px 7px;}
-  .link-box .chips{max-height:70px;overflow-y:auto;}
-  tr.excluida{opacity:.55;}
-  .code-cell{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11.5px;color:var(--muted);}
+  .small{font-size:12px;color:var(--muted);}
+  .edit-btn{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px;border-radius:6px;}
+  .edit-btn:hover{background:var(--neutral-bg);color:var(--accent-dark);}
+  footer.note{text-align:center;color:var(--muted);font-size:12px;margin-top:34px;line-height:1.6;}
+  [hidden]{display:none!important;}
 </style>
 </head>
 <body>
 
 <header class="app">
-  <h1>Control de Stock — Ideas Étnicas</h1>
-  <p>Compara Stock Inicial + Compras − Ventas contra el Stock Final reportado, artículo por artículo, para lo que se controla por unidad (bebidas embotelladas/enlatadas, vinos, etc). Todo se procesa en el navegador.</p>
+  <h1>Control de Stock</h1>
+  <p>Subí los 4 archivos del período y calculá si el stock de cada bebida cierra: lo que había, más lo que se compró, menos lo que se vendió, contra lo que quedó.</p>
 </header>
-
-<nav class="steps">
-  <button data-step="0" class="active">1. Subir archivos</button>
-  <button data-step="1" disabled>2. Mapear columnas</button>
-  <button data-step="2" disabled>3. Vincular artículos</button>
-  <button data-step="3" disabled>4. Resultado</button>
-</nav>
 
 <main>
 
-  <!-- STEP 0: UPLOAD -->
-  <section class="step active" id="step-0">
-    <div class="card">
-      <h2>1. Local y período</h2>
-      <div class="row">
-        <div class="field" style="min-width:260px;">
-          <label>Nombre del local</label>
-          <input type="text" id="nombre-local" placeholder="Ej: Baum de Lomas" value="Baum de Lomas">
-        </div>
-        <div class="field">
-          <label>Desde</label>
-          <input type="date" id="fecha-desde">
-        </div>
-        <div class="field">
-          <label>Hasta</label>
-          <input type="date" id="fecha-hasta">
-        </div>
+  <!-- SETUP -->
+  <div class="card" id="setup-card">
+    <h2>Tu local y período</h2>
+    <p class="hint">El rango de fechas filtra Compras y Ventas. Stock inicial y final no se filtran, son una foto de un momento puntual.</p>
+    <div class="row" style="margin-bottom:22px;">
+      <div class="field" style="min-width:220px;">
+        <label>Nombre del local</label>
+        <input type="text" id="nombre-local" placeholder="Ej: Baum de Lomas" value="Baum de Lomas">
       </div>
-      <p class="hint" style="margin-top:10px;margin-bottom:0;">El rango de fechas filtra Compras y Ventas (si esos archivos tienen columna de fecha mapeada). Stock inicial y final no se filtran: son una foto de un momento puntual.</p>
-    </div>
-
-    <div class="card">
-      <h2>2. Subí los 4 archivos de este local</h2>
-      <p class="hint">Uno por cada concepto. Cada local puede tener columnas distintas — en el paso siguiente le indicás a la app dónde está cada dato.</p>
-      <div class="grid4">
-        <div class="file-slot" id="slot-stockInicial">
-          <label>📦 Stock inicial</label>
-          <input type="file" accept=".xlsx,.xls,.csv" data-file="stockInicial">
-          <div class="filename"></div>
-        </div>
-        <div class="file-slot" id="slot-compras">
-          <label>🧾 Compras del período</label>
-          <input type="file" accept=".xlsx,.xls,.csv" data-file="compras">
-          <div class="filename"></div>
-        </div>
-        <div class="file-slot" id="slot-ventas">
-          <label>💰 Ventas del período</label>
-          <input type="file" accept=".xlsx,.xls,.csv" data-file="ventas">
-          <div class="filename"></div>
-        </div>
-        <div class="file-slot" id="slot-stockFinal">
-          <label>📦 Stock final</label>
-          <input type="file" accept=".xlsx,.xls,.csv" data-file="stockFinal">
-          <div class="filename"></div>
-        </div>
+      <div class="field">
+        <label>Desde</label>
+        <input type="date" id="fecha-desde">
+      </div>
+      <div class="field">
+        <label>Hasta</label>
+        <input type="date" id="fecha-hasta">
       </div>
     </div>
 
-    <div id="upload-error"></div>
-
-    <div class="actions">
-      <span></span>
-      <button class="btn" id="btn-to-step1" disabled>Siguiente: mapear columnas →</button>
+    <h2>Tus 4 archivos</h2>
+    <p class="hint">Uno por cada concepto. No hace falta prepararlos de ninguna forma especial.</p>
+    <div class="dropzones">
+      <label class="dropzone" id="slot-stockInicial">
+        <span class="ico">📦</span>
+        <span class="lbl">Stock inicial</span>
+        <span class="sub">lo que había al empezar</span>
+        <div class="filename"></div>
+        <input type="file" accept=".xlsx,.xls,.csv" data-file="stockInicial">
+      </label>
+      <label class="dropzone" id="slot-compras">
+        <span class="ico">🧾</span>
+        <span class="lbl">Compras</span>
+        <span class="sub">lo que se compró</span>
+        <div class="filename"></div>
+        <input type="file" accept=".xlsx,.xls,.csv" data-file="compras">
+      </label>
+      <label class="dropzone" id="slot-ventas">
+        <span class="ico">💰</span>
+        <span class="lbl">Ventas</span>
+        <span class="sub">lo que se vendió</span>
+        <div class="filename"></div>
+        <input type="file" accept=".xlsx,.xls,.csv" data-file="ventas">
+      </label>
+      <label class="dropzone" id="slot-stockFinal">
+        <span class="ico">📦</span>
+        <span class="lbl">Stock final</span>
+        <span class="sub">lo que quedó al cerrar</span>
+        <div class="filename"></div>
+        <input type="file" accept=".xlsx,.xls,.csv" data-file="stockFinal">
+      </label>
     </div>
-  </section>
 
-  <!-- STEP 1: MAPPING -->
-  <section class="step" id="step-1">
-    <div class="card">
-      <h2>2. Mapear columnas de cada archivo</h2>
-      <p class="hint">Elegí qué columna corresponde a cada dato. Si Stock Inicial/Final tienen una columna de código de producto (ej. "N° de Control"), mapeala — es la forma más confiable de identificar el mismo artículo aunque le cambien el nombre entre períodos.</p>
-      <div id="mapping-container"></div>
-    </div>
-    <div class="actions">
-      <button class="btn ghost" data-goto="0">← Volver</button>
-      <button class="btn" id="btn-to-step2">Siguiente: vincular artículos →</button>
-    </div>
-  </section>
+    <div id="setup-error"></div>
 
-  <!-- STEP 2: LINK ARTICLES -->
-  <section class="step" id="step-2">
-    <div class="card">
-      <h2>3a. Factores de conversión de Compras</h2>
-      <p class="hint">Compras suele venir en packs/cajas y Stock cuenta unidades sueltas (botellas/latas). Indicá cuántas unidades de stock representa cada "Unidad de Medida" de Compras. Se sugiere automáticamente a partir del texto (ej. "PACK X 6" → 6); revisalo.</p>
-      <div class="table-wrap" style="max-height:260px;">
-        <table id="factors-table">
-          <thead><tr><th>Unidad de Medida (Compras)</th><th>Ejemplo de artículo</th><th>Equivale a (unidades de stock)</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div style="margin-top:22px;">
+      <button class="btn big" id="btn-calcular" disabled>Calcular stock</button>
     </div>
 
-    <div class="card">
-      <h2>3b. Vincular artículos</h2>
-      <p class="hint">La lista sale del Stock Inicial (son los artículos que ese local ya cuenta por unidad). Para cada uno, vinculá el/los nombres con que aparece en Compras y en Ventas — puede tener varios nombres distintos por errores de tipeo. Los ítems de barril/canilla se excluyen por defecto (no son "por unidad" según lo pedido). Esto queda guardado en este navegador.</p>
-      <div class="row" style="margin-bottom:10px;">
-        <div class="field">
-          <label>Buscar</label>
-          <input type="text" id="link-search" placeholder="Ej: agua">
+    <details class="advanced" id="advanced-panel">
+      <summary>Ajustes avanzados (mapeo de columnas, conversión de unidades)</summary>
+      <div class="inner">
+        <p class="hint">Normalmente no hace falta tocar esto — la app detecta las columnas sola. Usalo solo si un local tiene un formato raro y el resultado no cierra por eso.</p>
+        <div id="mapping-container"></div>
+        <h3 style="font-size:13.5px;margin:18px 0 6px;">Conversión de unidades de Compras</h3>
+        <p class="hint">Compras suele venir en packs/cajas; Stock cuenta unidades sueltas. Cuántas unidades de stock representa cada "Unidad de Medida" (se sugiere solo, ej. "PACK X 6" → 6).</p>
+        <div class="table-wrap" style="max-height:220px;">
+          <table id="factors-table">
+            <thead><tr><th>Unidad de Medida (Compras)</th><th>Ejemplo</th><th>Equivale a</th></tr></thead>
+            <tbody></tbody>
+          </table>
         </div>
-        <div class="field">
-          <label>Mostrar</label>
-          <select id="link-filter">
-            <option value="all">Todos</option>
-            <option value="in">Incluidos</option>
-            <option value="out">Excluidos</option>
-            <option value="unlinked">Sin vincular en Compras o Ventas</option>
-          </select>
-        </div>
       </div>
-      <div class="table-wrap">
-        <table id="link-table">
-          <thead><tr>
-            <th>Incluir</th><th>Código</th><th>Artículo (stock)</th><th>Unidad stock</th>
-            <th>Stock Inicial</th><th>Stock Final</th>
-            <th>Vinculado en Compras</th><th>Vinculado en Ventas</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <datalist id="datalist-compras"></datalist>
-      <datalist id="datalist-ventas"></datalist>
-    </div>
+    </details>
+  </div>
 
-    <div class="actions">
-      <button class="btn ghost" data-goto="1">← Volver</button>
-      <button class="btn" id="btn-to-step3">Calcular resultado →</button>
+  <!-- REVIEW -->
+  <div class="card" id="review-card" hidden>
+    <h2>Antes de calcular, confirmanos esto</h2>
+    <p class="hint">Encontramos nombres parecidos pero no idénticos entre archivos y no queremos adivinar mal. Elegí la opción correcta (o "no corresponde" si no aplica) — se guarda para la próxima vez.</p>
+    <div id="review-list"></div>
+    <div class="row" style="margin-top:6px;justify-content:flex-end;">
+      <button class="btn" id="btn-confirmar-review">Listo, ver resultado →</button>
     </div>
-  </section>
+  </div>
 
-  <!-- STEP 3: RESULT -->
-  <section class="step" id="step-3">
+  <!-- RESULTS -->
+  <div id="results-wrap" hidden>
+    <div class="stats" id="result-stats"></div>
     <div class="card">
-      <h2>4. Resultado</h2>
-      <p class="hint">Stock Teórico = Stock Inicial + Compras − Ventas. Diferencia = Stock Final reportado − Stock Teórico.</p>
-      <div class="kpis" id="result-kpis"></div>
-      <div class="row" style="margin-bottom:14px;">
+      <div class="row" style="margin-bottom:16px;">
         <div class="field">
           <label>Buscar artículo</label>
           <input type="text" id="filter-articulo" placeholder="Ej: cerveza">
         </div>
         <div class="field">
           <label>Tolerancia (± unidades)</label>
-          <input type="number" id="filter-tolerancia" value="0" min="0" step="1" style="width:90px;">
+          <input type="number" id="filter-tolerancia" value="0" min="0" step="1" style="width:100px;">
         </div>
         <div class="field">
           <label style="visibility:hidden;">x</label>
-          <label style="font-weight:400;display:flex;gap:6px;align-items:center;"><input type="checkbox" id="filter-solo-diff"> Solo con diferencia</label>
+          <label style="font-weight:400;display:flex;gap:6px;align-items:center;font-size:14px;"><input type="checkbox" id="filter-solo-diff"> Solo con diferencia</label>
         </div>
         <div class="field" style="margin-left:auto;">
           <label>&nbsp;</label>
@@ -245,23 +230,22 @@
       <div class="table-wrap">
         <table id="result-table">
           <thead><tr>
-            <th>Código</th><th>Artículo</th>
-            <th>Stock Inicial</th><th>+ Compras</th><th>− Ventas</th><th>= Teórico</th>
-            <th>Stock Final</th><th>Diferencia</th><th>Estado</th>
+            <th>Artículo</th>
+            <th class="num">Inicial</th><th class="num">+ Compras</th><th class="num">− Ventas</th><th class="num">= Esperado</th>
+            <th class="num">Real</th><th class="num">Diferencia</th><th>Estado</th><th></th>
           </tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
-    <div class="actions">
-      <button class="btn ghost" data-goto="2">← Volver</button>
-      <button class="btn ghost" id="btn-restart">↺ Empezar de nuevo</button>
+    <div class="row" style="justify-content:space-between;">
+      <button class="btn ghost" id="btn-volver">← Volver a subir archivos</button>
     </div>
-  </section>
+  </div>
 
 </main>
 
-<footer class="note">Calibrado inicialmente contra el formato de Baum de Lomas — otros locales pueden tener columnas distintas, por eso el mapeo del paso 2 es manual por archivo.</footer>
+<footer class="note">Calibrado con el formato de Baum de Lomas. Otros locales pueden tener columnas distintas — si el resultado no cierra, revisá "Ajustes avanzados".</footer>
 
 <script src="vendor/xlsx.full.min.js"></script>
 <script>
@@ -272,9 +256,13 @@ const FILE_KEYS = ["stockInicial","compras","ventas","stockFinal"];
 const FILE_LABELS = {stockInicial:"Stock Inicial", compras:"Compras", ventas:"Ventas", stockFinal:"Stock Final"};
 const HAS_DATE = {compras:true, ventas:true, stockInicial:false, stockFinal:false};
 
-const LS_MAPPING = "cse_mappings_v1";
-const LS_LINKS = "cse_links_v1";
-const LS_FACTORS = "cse_factors_v1";
+const LS_MAPPING = "cse_mappings_v2";
+const LS_LINKS = "cse_links_v2";
+const LS_FACTORS = "cse_factors_v2";
+
+const AUTOLINK_SCORE = 0.8;   // fuzzy score to silently auto-link (needs a clear gap too)
+const AUTOLINK_GAP = 0.15;
+const REVIEW_MIN_SCORE = 0.34; // below this, don't even ask — nothing plausible found
 
 const $ = (sel, ctx) => (ctx||document).querySelector(sel);
 const $$ = (sel, ctx) => Array.from((ctx||document).querySelectorAll(sel));
@@ -283,13 +271,23 @@ const state = {
   files: {},
   dateDesde: null,
   dateHasta: null,
-  conversionFactors: {},   // normalizedUnidad -> factor
-  links: new Map(),        // masterKey -> {codigo, nombre, unidadStock, incluir, comprasNames:Set, ventasNames:Set, stockInicial, stockFinal, esBarrilGuess}
+  conversionFactors: {},
+  links: new Map(),
+  reviewQueue: [],
   results: null
 };
 
 function normalize(s){
   return String(s==null?"":s).trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+}
+
+// Expands common Spanish retail abbreviations ("c/gas" -> "con gas") so near-identical
+// names collapse to the same canonical form instead of relying on fuzzy guessing.
+function canonical(s){
+  let n = normalize(s);
+  n = n.replace(/\bc\//g, "con ").replace(/\bs\//g, "sin ");
+  n = n.replace(/\baq\b/g, "aquarius");
+  return n.replace(/\s+/g, " ").trim();
 }
 
 function decodeEntities(s){
@@ -315,7 +313,6 @@ function parseLatinNumber(s){
   return isNaN(n) ? 0 : n;
 }
 
-// Handles plain numbers, and text like "13 BOTELLAS", "1 BARRIL", "3/4 DE BARRIL", "1 Y 1/2 DE BARRIL".
 function parseQuantity(v){
   if(v==null || v==="") return 0;
   if(typeof v === "number") return v;
@@ -402,16 +399,36 @@ function buildRowObjects(aoa, headerRowIndex, headers){
   return rows;
 }
 
-// ---------- STEP 0: upload ----------
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function round2(n){ return Math.round(n*100)/100; }
 
-$$("input[type=file]").forEach(inp => {
+function loadJSON(key){
+  try{ return JSON.parse(localStorage.getItem(key) || "{}"); }catch(e){ return {}; }
+}
+function saveJSON(key, obj){
+  try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){}
+}
+
+// ---------- upload ----------
+
+$$(".dropzone input[type=file]").forEach(inp => {
   inp.addEventListener("change", e => onFileSelected(inp.dataset.file, e.target.files[0]));
+});
+$$(".dropzone").forEach(zone => {
+  ["dragenter","dragover"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add("dragover"); }));
+  ["dragleave","drop"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove("dragover"); }));
+  zone.addEventListener("drop", e => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if(file){ onFileSelected(zone.querySelector("input").dataset.file, file); }
+  });
 });
 $("#fecha-desde").addEventListener("change", e => { state.dateDesde = e.target.value ? new Date(e.target.value+"T00:00:00") : null; });
 $("#fecha-hasta").addEventListener("change", e => { state.dateHasta = e.target.value ? new Date(e.target.value+"T23:59:59") : null; });
 
 function onFileSelected(fileKey, file){
-  const errBox = $("#upload-error");
+  const errBox = $("#setup-error");
   errBox.innerHTML = "";
   if(!file) return;
   const reader = new FileReader();
@@ -433,13 +450,14 @@ function onFileSelected(fileKey, file){
         selectedSheets: [firstSheet],
         sheetLocalNames: {},
         headerRowIndex,
-        mapping: (savedMapping && savedMapping.mapping) || autoGuessMapping(fileKey, headers),
+        mapping: (savedMapping && savedMapping.mapping) || autoGuessMapping(headers),
         singleLocal: ""
       };
       const slot = $("#slot-"+fileKey);
       slot.classList.add("filled");
-      $(".filename", slot).textContent = "✓ " + file.name + " (" + sheetNames.length + " hoja" + (sheetNames.length>1?"s":"") + ")";
-      checkStep0Ready();
+      $(".filename", slot).textContent = "✓ " + file.name;
+      renderMappingPanel();
+      checkSetupReady();
     }catch(err){
       errBox.innerHTML = '<div class="error-box">No se pudo leer "'+file.name+'": '+err.message+'</div>';
     }
@@ -447,7 +465,7 @@ function onFileSelected(fileKey, file){
   reader.readAsArrayBuffer(file);
 }
 
-function autoGuessMapping(fileKey, headers){
+function autoGuessMapping(headers){
   const map = {};
   const norm = headers.map(h => normalize(h));
   function find(cands){
@@ -466,163 +484,71 @@ function autoGuessMapping(fileKey, headers){
   return map;
 }
 
-function checkStep0Ready(){
-  const ready = FILE_KEYS.every(k => state.files[k]);
-  $("#btn-to-step1").disabled = !ready;
+function checkSetupReady(){
+  const allLoaded = FILE_KEYS.every(k => state.files[k]);
+  $("#btn-calcular").disabled = !allLoaded;
 }
 
-function mappingSignature(headers){
-  return headers.slice().sort().join("|");
-}
+function mappingSignature(headers){ return headers.slice().sort().join("|"); }
 function loadSavedMapping(fileKey, headers){
-  try{
-    const all = JSON.parse(localStorage.getItem(LS_MAPPING) || "{}");
-    const sig = mappingSignature(headers);
-    return all[fileKey+"::"+sig] || null;
-  }catch(e){ return null; }
+  const all = loadJSON(LS_MAPPING);
+  return all[fileKey+"::"+mappingSignature(headers)] || null;
 }
 function saveMapping(fileKey, headers, mapping, mode){
-  try{
-    const all = JSON.parse(localStorage.getItem(LS_MAPPING) || "{}");
-    const sig = mappingSignature(headers);
-    all[fileKey+"::"+sig] = {mapping, mode};
-    localStorage.setItem(LS_MAPPING, JSON.stringify(all));
-  }catch(e){}
+  const all = loadJSON(LS_MAPPING);
+  all[fileKey+"::"+mappingSignature(headers)] = {mapping, mode};
+  saveJSON(LS_MAPPING, all);
 }
 
-// ---------- STEP 1: mapping ----------
+// ---------- advanced: mapping panel ----------
 
 function fieldsForFile(fileKey){
   const base = [
-    {key:"codigo", label:"Código de producto (opcional)", required:false},
+    {key:"codigo", label:"Código de producto", required:false},
     {key:"articulo", label:"Artículo", required:true},
-    {key:"unidad", label:"Unidad de medida (opcional)", required:false},
+    {key:"unidad", label:"Unidad de medida", required:false},
     {key:"cantidad", label:"Cantidad", required:true}
   ];
-  if(HAS_DATE[fileKey]) base.push({key:"fecha", label:"Fecha (opcional)", required:false});
+  if(HAS_DATE[fileKey]) base.push({key:"fecha", label:"Fecha", required:false});
   return base;
 }
 
-function renderMappingStep(){
+function renderMappingPanel(){
   const container = $("#mapping-container");
   container.innerHTML = "";
-  FILE_KEYS.forEach(fileKey => container.appendChild(renderFileMapping(fileKey)));
+  FILE_KEYS.forEach(fileKey => {
+    if(!state.files[fileKey]) return;
+    container.appendChild(renderFileMapping(fileKey));
+  });
 }
 
 function renderFileMapping(fileKey){
   const f = state.files[fileKey];
   const wrap = document.createElement("div");
-  wrap.className = "filesection";
-  wrap.id = "mapping-"+fileKey;
+  wrap.style.borderTop = "1px solid var(--border)";
+  wrap.style.paddingTop = "12px";
+  wrap.style.marginTop = "12px";
 
-  const title = document.createElement("h3");
+  const title = document.createElement("div");
+  title.style.fontWeight = "700";
+  title.style.fontSize = "13px";
+  title.style.marginBottom = "8px";
   title.textContent = FILE_LABELS[fileKey] + " — " + f.name;
   wrap.appendChild(title);
 
-  const pills = document.createElement("div");
-  pills.className = "mode-pills";
-  const modes = [
-    ["unico","Todo el archivo es de este local"],
-    ["columna","Una columna indica el Local"],
-    ["hojas","Cada hoja es un local distinto"]
-  ];
-  modes.forEach(([modeKey, label]) => {
-    const b = document.createElement("button");
-    b.textContent = label;
-    b.type = "button";
-    if(f.mode===modeKey) b.classList.add("active");
-    b.addEventListener("click", () => { f.mode = modeKey; renderMappingStep(); });
-    pills.appendChild(b);
-  });
-  wrap.appendChild(pills);
-
-  if(f.sheetNames.length > 1 && f.mode !== "hojas"){
-    const sheetField = document.createElement("div");
-    sheetField.className = "field";
-    sheetField.style.marginBottom = "10px";
-    sheetField.innerHTML = '<label>Hoja</label>';
-    const sel = document.createElement("select");
-    f.sheetNames.forEach(sn => {
-      const opt = document.createElement("option");
-      opt.value = sn; opt.textContent = sn;
-      if(sn === f.selectedSheet) opt.selected = true;
-      sel.appendChild(opt);
-    });
-    sel.addEventListener("change", () => {
-      f.selectedSheet = sel.value;
-      f.headerRowIndex = guessHeaderRow(sheetAOA(f.wb.Sheets[f.selectedSheet]));
-      renderMappingStep();
-    });
-    sheetField.appendChild(sel);
-    wrap.appendChild(sheetField);
-  }
-
-  if(f.mode === "hojas"){
-    const sheetList = document.createElement("div");
-    sheetList.className = "sheet-list";
-    sheetList.innerHTML = '<label style="font-weight:600;color:var(--muted);margin-bottom:4px;">Hojas a incluir (nombre de hoja = nombre de local, editable):</label>';
-    f.sheetNames.forEach(sn => {
-      const rowEl = document.createElement("div");
-      rowEl.style.display = "flex";
-      rowEl.style.gap = "8px";
-      rowEl.style.alignItems = "center";
-      const checked = f.selectedSheets.includes(sn);
-      rowEl.innerHTML = '<label style="min-width:160px;"><input type="checkbox" '+(checked?"checked":"")+' data-sheet="'+sn+'"> '+sn+'</label>';
-      const nameInput = document.createElement("input");
-      nameInput.type = "text";
-      nameInput.style.width = "160px";
-      nameInput.placeholder = "Nombre del local";
-      nameInput.value = f.sheetLocalNames[sn] || sn;
-      nameInput.addEventListener("input", () => { f.sheetLocalNames[sn] = nameInput.value; });
-      rowEl.querySelector("input[type=checkbox]").addEventListener("change", (e) => {
-        if(e.target.checked){ if(!f.selectedSheets.includes(sn)) f.selectedSheets.push(sn); }
-        else { f.selectedSheets = f.selectedSheets.filter(s => s!==sn); }
-      });
-      rowEl.appendChild(nameInput);
-      sheetList.appendChild(rowEl);
-    });
-    wrap.appendChild(sheetList);
-    f.selectedSheet = f.selectedSheets[0] || f.sheetNames[0];
-  }
-
-  if(f.mode === "columna"){
-    const noteEl = document.createElement("p");
-    noteEl.className = "small";
-    noteEl.textContent = "Vas a mapear la columna \"Local\" más abajo.";
-    wrap.appendChild(noteEl);
-  }
-
   const aoa = sheetAOA(f.wb.Sheets[f.selectedSheet]);
-  const headerField = document.createElement("div");
-  headerField.className = "field";
-  headerField.style.marginBottom = "10px";
-  headerField.innerHTML = '<label>Fila de encabezados</label>';
-  const headerSel = document.createElement("select");
-  for(let i=0;i<Math.min(aoa.length,10);i++){
-    const opt = document.createElement("option");
-    opt.value = i;
-    const preview = (aoa[i]||[]).slice(0,5).map(c=>c==null?"":String(c)).join(" | ");
-    opt.textContent = "Fila " + (i+1) + ": " + preview;
-    if(i === f.headerRowIndex) opt.selected = true;
-    headerSel.appendChild(opt);
-  }
-  headerSel.addEventListener("change", () => { f.headerRowIndex = parseInt(headerSel.value,10); renderMappingStep(); });
-  headerField.appendChild(headerSel);
-  wrap.appendChild(headerField);
-
   const headers = buildHeaders(aoa, f.headerRowIndex);
 
   const fields = fieldsForFile(fileKey);
-  if(f.mode === "columna") fields.unshift({key:"local", label:"Local", required:true});
-  const rowEl2 = document.createElement("div");
-  rowEl2.className = "row";
+  const rowEl = document.createElement("div");
+  rowEl.className = "row";
   fields.forEach(fld => {
     const fwrap = document.createElement("div");
     fwrap.className = "field";
     fwrap.innerHTML = '<label>'+fld.label+(fld.required?" *":"")+'</label>';
     const sel = document.createElement("select");
     const optNone = document.createElement("option");
-    optNone.value = ""; optNone.textContent = fld.required ? "— elegir columna —" : "— sin columna —";
+    optNone.value = ""; optNone.textContent = fld.required ? "— elegir —" : "— sin columna —";
     sel.appendChild(optNone);
     headers.forEach(h => {
       const opt = document.createElement("option");
@@ -633,32 +559,24 @@ function renderFileMapping(fileKey){
     sel.addEventListener("change", () => {
       f.mapping[fld.key] = sel.value || null;
       saveMapping(fileKey, headers, f.mapping, f.mode);
-      updateStep1ReadyState();
     });
     fwrap.appendChild(sel);
-    rowEl2.appendChild(fwrap);
+    rowEl.appendChild(fwrap);
   });
-  wrap.appendChild(rowEl2);
-
-  const rows = buildRowObjects(aoa, f.headerRowIndex, headers);
-  const previewEl = document.createElement("div");
-  previewEl.className = "preview";
-  previewEl.textContent = rows.length + " filas de datos detectadas en la hoja \"" + f.selectedSheet + "\".";
-  wrap.appendChild(previewEl);
-
+  wrap.appendChild(rowEl);
   return wrap;
 }
 
-function updateStep1ReadyState(){
-  let ok = true;
+function mappingIsComplete(){
+  const missing = [];
   FILE_KEYS.forEach(fileKey => {
     const f = state.files[fileKey];
-    const fields = fieldsForFile(fileKey);
-    fields.forEach(fld => { if(fld.required && !f.mapping[fld.key]) ok = false; });
-    if(f.mode === "columna" && !f.mapping.local) ok = false;
-    if(f.mode === "hojas" && f.selectedSheets.length === 0) ok = false;
+    if(!f) return;
+    fieldsForFile(fileKey).forEach(fld => {
+      if(fld.required && !f.mapping[fld.key]) missing.push(FILE_LABELS[fileKey] + ": " + fld.label);
+    });
   });
-  $("#btn-to-step2").disabled = !ok;
+  return missing;
 }
 
 // ---------- extraction ----------
@@ -675,11 +593,7 @@ function extractRecords(fileKey){
     rows.forEach(row => {
       const articuloRaw = f.mapping.articulo ? row[f.mapping.articulo] : null;
       if(articuloRaw == null || String(articuloRaw).trim() === "") return;
-      let local;
-      if(f.mode === "columna") local = f.mapping.local ? row[f.mapping.local] : null;
-      else if(f.mode === "unico") local = localGlobal;
-      else local = f.sheetLocalNames[sheetName] || sheetName;
-      if(local == null || String(local).trim() === "") local = "(Sin local)";
+      const local = localGlobal;
       const codigo = f.mapping.codigo ? row[f.mapping.codigo] : null;
       const unidad = f.mapping.unidad ? row[f.mapping.unidad] : "";
       const cantidadRaw = f.mapping.cantidad ? row[f.mapping.cantidad] : 0;
@@ -705,27 +619,18 @@ function inDateRange(rec){
   return true;
 }
 
-// ---------- STEP 2: conversion factors + article linking ----------
-
-function loadJSON(key){
-  try{ return JSON.parse(localStorage.getItem(key) || "{}"); }catch(e){ return {}; }
-}
-function saveJSON(key, obj){
-  try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){}
-}
+// ---------- conversion factors ----------
 
 function buildFactorsTable(){
   const compras = extractRecords("compras");
-  const seen = new Map(); // normalizedUnidad -> {label, sample}
+  const seen = new Map();
   compras.forEach(r => {
     const key = normalize(r.unidad);
     if(!seen.has(key)) seen.set(key, {label:r.unidad || "(sin unidad)", sample:r.articulo});
   });
   const saved = loadJSON(LS_FACTORS);
   seen.forEach((v,key) => {
-    if(!(key in state.conversionFactors)){
-      state.conversionFactors[key] = (key in saved) ? saved[key] : guessPackFactor(v.label);
-    }
+    state.conversionFactors[key] = (key in saved) ? saved[key] : guessPackFactor(v.label);
   });
   state._comprasUnitSamples = seen;
 }
@@ -735,11 +640,8 @@ function renderFactorsTable(){
   tbody.innerHTML = "";
   state._comprasUnitSamples.forEach((v,key) => {
     const tr = document.createElement("tr");
-    const tdU = document.createElement("td");
-    tdU.textContent = v.label;
-    const tdS = document.createElement("td");
-    tdS.textContent = v.sample;
-    tdS.className = "small";
+    const tdU = document.createElement("td"); tdU.textContent = v.label;
+    const tdS = document.createElement("td"); tdS.textContent = v.sample; tdS.className = "small";
     const tdF = document.createElement("td");
     const inp = document.createElement("input");
     inp.type = "number"; inp.min = "0"; inp.step = "0.01"; inp.style.width = "90px";
@@ -749,7 +651,7 @@ function renderFactorsTable(){
       const all = loadJSON(LS_FACTORS);
       all[key] = state.conversionFactors[key];
       saveJSON(LS_FACTORS, all);
-      renderLinkTable();
+      if(state.results) { computeResults(); renderResults(); }
     });
     tdF.appendChild(inp);
     tr.appendChild(tdU); tr.appendChild(tdS); tr.appendChild(tdF);
@@ -762,25 +664,54 @@ function factorFor(unidad){
   return (key in state.conversionFactors) ? state.conversionFactors[key] : 1;
 }
 
-function masterKeyFor(rec, codeIsReliable){
-  if(codeIsReliable && rec.codigo) return "CODE::" + normalize(rec.codigo);
-  return "NAME::" + normalize(rec.articulo);
+// ---------- article matching ----------
+
+function stem(t){
+  return (t.length >= 4 && t.endsWith("s")) ? t.slice(0,-1) : t; // crude: "latas" -> "lata"
 }
 
 function tokenize(name){
-  return normalize(name).split(/[^a-z0-9]+/).filter(t => t.length > 1);
+  let s = canonical(name);
+  return s.split(/[^a-z0-9]+/).filter(t => t.length > 1 || /^[0-9]+$/.test(t)).map(stem);
 }
 
+// Containment-based: how much of the SHORTER name's tokens appear in the longer one.
+// This lets "COCA ZERO" match "Coca Cola Zero" (an expansion, not a different product)
+// without needing them to be near-identical in length. Size/volume numbers are treated
+// specially: if both names carry them and they don't match ("1,5" vs "600ml"), that's a
+// real product-size difference, not a naming variant — the score gets dampened hard so
+// it never auto-links, only shows up as a "you decide" review candidate.
 function similarity(aTokens, bName){
   const bTokens = tokenize(bName);
   if(aTokens.length===0 || bTokens.length===0) return 0;
   const bSet = new Set(bTokens);
   let hits = 0;
   aTokens.forEach(t => { if(bSet.has(t)) hits++; });
-  return hits / Math.max(aTokens.length, bTokens.length);
+  let score = hits / Math.min(aTokens.length, bTokens.length);
+  const aNum = aTokens.filter(t => /\d/.test(t));
+  const bNum = bTokens.filter(t => /\d/.test(t));
+  const bothLackSize = aNum.length===0 && bNum.length===0;
+  if(!bothLackSize){
+    const overlap = aNum.some(t => bNum.includes(t));
+    if(!overlap) score *= 0.4;
+  }
+  return Math.min(score, 1);
 }
 
-function buildLinkUniverse(){
+function distinctNamesFrom(records){
+  const seen = new Map();
+  records.forEach(r => { const k = normalize(r.articulo); if(!seen.has(k)) seen.set(k, r.articulo); });
+  return Array.from(seen.values());
+}
+
+function rankCandidates(masterNombre, distinctNames){
+  const aTokens = tokenize(masterNombre);
+  return distinctNames
+    .map(n => ({n, score: similarity(aTokens, n)}))
+    .sort((a,b) => b.score - a.score);
+}
+
+function buildMasterList(){
   const stockIniHasCode = !!state.files.stockInicial.mapping.codigo;
   const stockFinHasCode = !!state.files.stockFinal.mapping.codigo;
   const codeReliable = stockIniHasCode && stockFinHasCode;
@@ -793,127 +724,217 @@ function buildLinkUniverse(){
   const saved = loadJSON(LS_LINKS);
   const master = new Map();
 
+  function keyFor(rec){
+    return (codeReliable && rec.codigo) ? "CODE::"+normalize(rec.codigo) : "NAME::"+canonical(rec.articulo);
+  }
+
   function upsert(rec, field){
-    const key = masterKeyFor(rec, codeReliable);
+    const key = keyFor(rec);
     if(!master.has(key)){
       const savedEntry = saved[key];
       master.set(key, {
         key, codigo: rec.codigo || (savedEntry && savedEntry.codigo) || "",
-        nombre: rec.articulo,
-        unidadStock: rec.unidad,
+        nombre: rec.articulo, unidadStock: rec.unidad,
         stockInicial: 0, stockFinal: 0,
         esBarrilGuess: normalize(rec.unidad)==="unid" || /barril/.test(normalize(rec.cantidadRawText)),
         comprasNames: new Set(savedEntry ? savedEntry.comprasNames : []),
         ventasNames: new Set(savedEntry ? savedEntry.ventasNames : []),
-        incluir: savedEntry ? savedEntry.incluir : null
+        incluir: savedEntry ? savedEntry.incluir : null,
+        reviewedCompras: savedEntry ? !!savedEntry.reviewedCompras : false,
+        reviewedVentas: savedEntry ? !!savedEntry.reviewedVentas : false
       });
     }
     const m = master.get(key);
     m[field] += rec.cantidad;
-    if(field==="stockInicial") m.nombre = rec.articulo; // prefer stockInicial's naming
+    if(field==="stockInicial") m.nombre = rec.articulo;
   }
 
   stockIni.forEach(r => upsert(r, "stockInicial"));
   stockFin.forEach(r => upsert(r, "stockFinal"));
 
-  // auto-link exact normalized-name matches, and compute default "incluir"
+  const comprasDistinct = distinctNamesFrom(state._comprasAll);
+  const ventasDistinct = distinctNamesFrom(state._ventasAll);
+  const reviewQueue = [];
+
   master.forEach(m => {
     if(m.incluir === null) m.incluir = !m.esBarrilGuess;
-    state._comprasAll.forEach(r => { if(normalize(r.articulo) === normalize(m.nombre)) m.comprasNames.add(normalize(r.articulo)); });
-    state._ventasAll.forEach(r => { if(normalize(r.articulo) === normalize(m.nombre)) m.ventasNames.add(normalize(r.articulo)); });
+    if(!m.incluir) return;
+
+    [["compras", comprasDistinct, "comprasNames", "reviewedCompras"],
+     ["ventas", ventasDistinct, "ventasNames", "reviewedVentas"]].forEach(([source, distinct, namesField, reviewedField]) => {
+      if(m[namesField].size > 0) return; // already linked (from a previous session, or will be below)
+      // exact canonical match first
+      const exact = distinct.filter(n => canonical(n) === canonical(m.nombre));
+      if(exact.length){
+        exact.forEach(n => m[namesField].add(normalize(n)));
+        return;
+      }
+      const ranked = rankCandidates(m.nombre, distinct);
+      if(ranked.length === 0 || ranked[0].score < REVIEW_MIN_SCORE) return; // nothing plausible, leave at 0 silently
+      const best = ranked[0], second = ranked[1];
+      const gap = second ? best.score - second.score : 1;
+      if(best.score >= AUTOLINK_SCORE && gap >= AUTOLINK_GAP){
+        m[namesField].add(normalize(best.n));
+        return;
+      }
+      if(m[reviewedField]) return; // user already said "no corresponde" before
+      reviewQueue.push({
+        masterKey: m.key, nombre: m.nombre, source, sourceLabel: source==="compras"?"Compras":"Ventas",
+        candidates: ranked.slice(0,4).filter(c => c.score >= REVIEW_MIN_SCORE).map(c => c.n)
+      });
+    });
   });
 
   state.links = master;
+  state.reviewQueue = reviewQueue;
   persistLinks();
 }
 
 function persistLinks(){
   const obj = {};
   state.links.forEach((m,key) => {
-    obj[key] = {codigo:m.codigo, incluir:m.incluir, comprasNames:Array.from(m.comprasNames), ventasNames:Array.from(m.ventasNames)};
+    obj[key] = {
+      codigo:m.codigo, incluir:m.incluir,
+      comprasNames:Array.from(m.comprasNames), ventasNames:Array.from(m.ventasNames),
+      reviewedCompras:m.reviewedCompras, reviewedVentas:m.reviewedVentas
+    };
   });
   saveJSON(LS_LINKS, obj);
 }
 
-function suggestNames(masterNombre, distinctNames, alreadyLinked){
-  const aTokens = tokenize(masterNombre);
-  const scored = distinctNames
-    .filter(n => !alreadyLinked.has(normalize(n)))
-    .map(n => ({n, score: similarity(aTokens, n)}))
-    .filter(s => s.score >= 0.34)
-    .sort((a,b) => b.score - a.score)
-    .slice(0,5);
-  return scored.map(s => s.n);
-}
+// ---------- review flow ----------
 
-function distinctNamesFrom(records){
-  const seen = new Map();
-  records.forEach(r => { const k = normalize(r.articulo); if(!seen.has(k)) seen.set(k, r.articulo); });
-  return Array.from(seen.values());
-}
-
-function renderLinkTable(){
-  const tbody = $("#link-table tbody");
-  tbody.innerHTML = "";
-  const search = normalize($("#link-search").value);
-  const filter = $("#link-filter").value;
-
-  const comprasDistinct = distinctNamesFrom(state._comprasAll);
-  const ventasDistinct = distinctNamesFrom(state._ventasAll);
-  $("#datalist-compras").innerHTML = comprasDistinct.map(n => '<option value="'+esc(n)+'">').join("");
-  $("#datalist-ventas").innerHTML = ventasDistinct.map(n => '<option value="'+esc(n)+'">').join("");
-
-  const entries = Array.from(state.links.values()).sort((a,b) => a.nombre.localeCompare(b.nombre));
-
-  entries.forEach(m => {
-    if(search && !normalize(m.nombre).includes(search)) return;
-    if(filter === "in" && !m.incluir) return;
-    if(filter === "out" && m.incluir) return;
-    if(filter === "unlinked" && m.comprasNames.size>0 && m.ventasNames.size>0) return;
-
-    const tr = document.createElement("tr");
-    if(!m.incluir) tr.classList.add("excluida");
-
-    const tdInc = document.createElement("td");
-    const chk = document.createElement("input");
-    chk.type = "checkbox"; chk.checked = m.incluir;
-    chk.addEventListener("change", () => { m.incluir = chk.checked; persistLinks(); renderLinkTable(); });
-    tdInc.appendChild(chk);
-    tr.appendChild(tdInc);
-
-    const tdCod = document.createElement("td");
-    tdCod.className = "code-cell";
-    tdCod.textContent = m.codigo || "—";
-    tr.appendChild(tdCod);
-
-    const tdNom = document.createElement("td");
-    tdNom.textContent = m.nombre + (m.esBarrilGuess ? " " : "");
-    if(m.esBarrilGuess){
-      const b = document.createElement("span");
-      b.className = "badge warn"; b.textContent = "barril/canilla";
-      b.style.marginLeft = "6px";
-      tdNom.appendChild(b);
-    }
-    tr.appendChild(tdNom);
-
-    const tdUn = document.createElement("td");
-    tdUn.textContent = m.unidadStock || "";
-    tr.appendChild(tdUn);
-
-    const tdSI = document.createElement("td"); tdSI.textContent = round2(m.stockInicial); tr.appendChild(tdSI);
-    const tdSF = document.createElement("td"); tdSF.textContent = round2(m.stockFinal); tr.appendChild(tdSF);
-
-    tr.appendChild(renderLinkCell(m, "comprasNames", comprasDistinct, "datalist-compras"));
-    tr.appendChild(renderLinkCell(m, "ventasNames", ventasDistinct, "datalist-ventas"));
-
-    tbody.appendChild(tr);
+function renderReview(){
+  const list = $("#review-list");
+  list.innerHTML = "";
+  state.reviewQueue.forEach((item, idx) => {
+    const div = document.createElement("div");
+    div.className = "review-item";
+    const q = document.createElement("p");
+    q.className = "q";
+    q.innerHTML = 'En <b>'+esc(item.sourceLabel)+'</b>, ¿cuál de estos nombres es <b>'+esc(item.nombre)+'</b>?';
+    div.appendChild(q);
+    const chips = document.createElement("div");
+    chips.className = "chips";
+    item.candidates.forEach(c => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "chip pick";
+      b.textContent = c;
+      b.addEventListener("click", () => resolveReview(idx, c));
+      chips.appendChild(b);
+    });
+    const skip = document.createElement("button");
+    skip.type = "button"; skip.className = "chip skip";
+    skip.textContent = "Ninguno / no corresponde";
+    skip.addEventListener("click", () => resolveReview(idx, null));
+    chips.appendChild(skip);
+    div.appendChild(chips);
+    list.appendChild(div);
   });
 }
 
-function renderLinkCell(m, field, distinctNames, datalistId){
-  const td = document.createElement("td");
-  td.className = "link-box";
+function resolveReview(idx, chosenName){
+  const item = state.reviewQueue[idx];
+  const m = state.links.get(item.masterKey);
+  const namesField = item.source === "compras" ? "comprasNames" : "ventasNames";
+  const reviewedField = item.source === "compras" ? "reviewedCompras" : "reviewedVentas";
+  if(chosenName) m[namesField].add(normalize(chosenName));
+  m[reviewedField] = true;
+  persistLinks();
+  const card = $$(".review-item")[idx];
+  if(card){ card.style.opacity = ".35"; card.querySelectorAll("button").forEach(b => b.disabled = true); }
+}
 
+// ---------- compute + render results ----------
+
+function computeResults(){
+  const comprasInRange = state._comprasAll.filter(inDateRange);
+  const ventasInRange = state._ventasAll.filter(inDateRange);
+  const rows = [];
+  state.links.forEach(m => {
+    if(!m.incluir) return;
+    let compras = 0;
+    comprasInRange.forEach(r => { if(m.comprasNames.has(normalize(r.articulo))) compras += r.cantidad * factorFor(r.unidad); });
+    let ventas = 0;
+    ventasInRange.forEach(r => { if(m.ventasNames.has(normalize(r.articulo))) ventas += r.cantidad; });
+    const teorico = m.stockInicial + compras - ventas;
+    const diferencia = m.stockFinal - teorico;
+    rows.push({ key:m.key, codigo:m.codigo, articulo:m.nombre, stockInicial:m.stockInicial, compras, ventas, teorico, stockFinal:m.stockFinal, diferencia });
+  });
+  rows.sort((a,b) => Math.abs(b.diferencia) - Math.abs(a.diferencia) || a.articulo.localeCompare(b.articulo));
+  state.results = rows;
+}
+
+let openEditorKey = null;
+
+function renderResults(){
+  const tol = Math.abs(parseFloat($("#filter-tolerancia").value)) || 0;
+  const searchArt = normalize($("#filter-articulo").value);
+  const soloDiff = $("#filter-solo-diff").checked;
+
+  let rows = state.results;
+  if(searchArt) rows = rows.filter(r => normalize(r.articulo).includes(searchArt));
+  if(soloDiff) rows = rows.filter(r => Math.abs(r.diferencia) > tol);
+
+  let okCount=0, faltCount=0, sobrCount=0;
+  state.results.forEach(r => {
+    if(Math.abs(r.diferencia) <= tol) okCount++;
+    else if(r.diferencia < 0) faltCount++;
+    else sobrCount++;
+  });
+  $("#result-stats").innerHTML =
+    '<div class="stat"><div class="n">'+state.results.length+'</div><div class="l">Artículos controlados</div></div>' +
+    '<div class="stat ok"><div class="n">'+okCount+'</div><div class="l">Cierran OK</div></div>' +
+    '<div class="stat bad"><div class="n">'+faltCount+'</div><div class="l">Faltantes</div></div>' +
+    '<div class="stat warn"><div class="n">'+sobrCount+'</div><div class="l">Sobrantes</div></div>';
+
+  const tbody = $("#result-table tbody");
+  tbody.innerHTML = "";
+  rows.forEach(r => {
+    const tr = document.createElement("tr");
+    const estado = Math.abs(r.diferencia) <= tol ? ["OK","ok","✓"] : (r.diferencia < 0 ? ["Faltante","bad","▼"] : ["Sobrante","warn","▲"]);
+    const diffClass = Math.abs(r.diferencia) <= tol ? "diff-zero" : (r.diferencia < 0 ? "diff-neg" : "diff-pos");
+    tr.innerHTML = [
+      esc(r.articulo) + (r.codigo ? ' <span class="code-cell">'+esc(r.codigo)+'</span>' : ''),
+      round2(r.stockInicial), round2(r.compras), round2(r.ventas), round2(r.teorico), round2(r.stockFinal),
+      '<span class="'+diffClass+'">'+(r.diferencia>0?"+":"")+round2(r.diferencia)+'</span>',
+      '<span class="badge '+estado[1]+'">'+estado[2]+' '+estado[0]+'</span>',
+      '<button class="edit-btn" data-key="'+esc(r.key)+'" title="Corregir vínculos">✎</button>'
+    ].map((c,i) => '<td'+([1,2,3,4,5,6].includes(i)?' class="num"':'')+'>'+c+'</td>').join("");
+    tbody.appendChild(tr);
+    if(openEditorKey === r.key){
+      const trEdit = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 9;
+      td.appendChild(renderInlineEditor(r.key));
+      trEdit.appendChild(td);
+      tbody.appendChild(trEdit);
+    }
+  });
+
+  $$(".edit-btn").forEach(b => b.addEventListener("click", () => {
+    openEditorKey = openEditorKey === b.dataset.key ? null : b.dataset.key;
+    renderResults();
+  }));
+}
+
+function renderInlineEditor(key){
+  const m = state.links.get(key);
+  const wrap = document.createElement("div");
+  wrap.className = "link-edit";
+  const cols = document.createElement("div");
+  cols.className = "cols";
+  const comprasDistinct = distinctNamesFrom(state._comprasAll);
+  const ventasDistinct = distinctNamesFrom(state._ventasAll);
+  cols.appendChild(buildEditColumn(m, "comprasNames", comprasDistinct, "Nombres en Compras"));
+  cols.appendChild(buildEditColumn(m, "ventasNames", ventasDistinct, "Nombres en Ventas"));
+  wrap.appendChild(cols);
+  return wrap;
+}
+
+function buildEditColumn(m, field, distinctNames, title){
+  const col = document.createElement("div");
+  const h4 = document.createElement("h4"); h4.textContent = title; col.appendChild(h4);
   const chips = document.createElement("div");
   chips.className = "chips";
   m[field].forEach(normName => {
@@ -923,134 +944,31 @@ function renderLinkCell(m, field, distinctNames, datalistId){
     chip.textContent = original;
     const rm = document.createElement("button");
     rm.textContent = "×";
-    rm.title = "Quitar";
-    rm.addEventListener("click", () => { m[field].delete(normName); persistLinks(); renderLinkTable(); });
+    rm.addEventListener("click", () => { m[field].delete(normName); persistLinks(); computeResults(); renderResults(); });
     chip.appendChild(rm);
     chips.appendChild(chip);
   });
-  td.appendChild(chips);
-
+  col.appendChild(chips);
+  const listId = "dl-"+title.replace(/\s+/g,"-")+"-"+m.key.replace(/[^a-z0-9]/gi,"");
+  const dl = document.createElement("datalist");
+  dl.id = listId;
+  dl.innerHTML = distinctNames.map(n => '<option value="'+esc(n)+'">').join("");
+  col.appendChild(dl);
   const inp = document.createElement("input");
-  inp.type = "text";
-  inp.setAttribute("list", datalistId);
-  inp.placeholder = "Agregar nombre...";
+  inp.type = "text"; inp.setAttribute("list", listId); inp.placeholder = "Agregar nombre...";
   inp.addEventListener("change", () => {
     const val = inp.value.trim();
     if(val && distinctNames.some(n => normalize(n)===normalize(val))){
-      m[field].add(normalize(val));
-      persistLinks();
-      renderLinkTable();
+      m[field].add(normalize(val)); persistLinks(); computeResults(); renderResults();
     }
   });
-  td.appendChild(inp);
-
-  const suggestions = suggestNames(m.nombre, distinctNames, m[field]);
-  if(suggestions.length){
-    const sw = document.createElement("div");
-    sw.className = "chips";
-    suggestions.forEach(s => {
-      const chip = document.createElement("span");
-      chip.className = "chip suggest";
-      chip.textContent = "+ " + s;
-      chip.addEventListener("click", () => { m[field].add(normalize(s)); persistLinks(); renderLinkTable(); });
-      sw.appendChild(chip);
-    });
-    td.appendChild(sw);
-  }
-
-  return td;
-}
-
-function round2(n){ return Math.round(n*100)/100; }
-
-function esc(s){
-  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-
-$("#link-search").addEventListener("input", renderLinkTable);
-$("#link-filter").addEventListener("change", renderLinkTable);
-
-// ---------- STEP 3: compute + render result ----------
-
-function computeResults(){
-  const comprasInRange = state._comprasAll.filter(inDateRange);
-  const ventasInRange = state._ventasAll.filter(inDateRange);
-
-  const rows = [];
-  state.links.forEach(m => {
-    if(!m.incluir) return;
-    let compras = 0;
-    comprasInRange.forEach(r => {
-      if(m.comprasNames.has(normalize(r.articulo))) compras += r.cantidad * factorFor(r.unidad);
-    });
-    let ventas = 0;
-    ventasInRange.forEach(r => {
-      if(m.ventasNames.has(normalize(r.articulo))) ventas += r.cantidad;
-    });
-    const teorico = m.stockInicial + compras - ventas;
-    const diferencia = m.stockFinal - teorico;
-    rows.push({
-      codigo: m.codigo, articulo: m.nombre,
-      stockInicial: m.stockInicial, compras, ventas, teorico,
-      stockFinal: m.stockFinal, diferencia
-    });
-  });
-
-  rows.sort((a,b) => a.articulo.localeCompare(b.articulo));
-  state.results = rows;
-}
-
-function renderResultStep(){
-  renderResultTable();
-}
-
-function renderResultTable(){
-  const tol = Math.abs(parseFloat($("#filter-tolerancia").value)) || 0;
-  const searchArt = normalize($("#filter-articulo").value);
-  const soloDiff = $("#filter-solo-diff").checked;
-
-  let rows = state.results;
-  if(searchArt) rows = rows.filter(r => normalize(r.articulo).includes(searchArt));
-  if(soloDiff) rows = rows.filter(r => Math.abs(r.diferencia) > tol);
-
-  const tbody = $("#result-table tbody");
-  tbody.innerHTML = "";
-  let okCount=0, faltCount=0, sobrCount=0;
-  state.results.forEach(r => {
-    if(Math.abs(r.diferencia) <= tol) okCount++;
-    else if(r.diferencia < 0) faltCount++;
-    else sobrCount++;
-  });
-
-  $("#result-kpis").innerHTML = [
-    ["Artículos controlados", state.results.length],
-    ["OK", okCount],
-    ["Faltantes", faltCount],
-    ["Sobrantes", sobrCount]
-  ].map(([l,n]) => '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>').join("");
-
-  rows.forEach(r => {
-    const tr = document.createElement("tr");
-    const estado = Math.abs(r.diferencia) <= tol ? ["OK","ok"] : (r.diferencia < 0 ? ["Faltante","bad"] : ["Sobrante","warn"]);
-    const diffClass = Math.abs(r.diferencia) <= tol ? "diff-zero" : (r.diferencia < 0 ? "diff-neg" : "diff-pos");
-    tr.innerHTML = [
-      '<span class="code-cell">'+esc(r.codigo||"—")+'</span>',
-      esc(r.articulo),
-      round2(r.stockInicial),
-      round2(r.compras),
-      round2(r.ventas),
-      round2(r.teorico),
-      round2(r.stockFinal),
-      '<span class="'+diffClass+'">'+(r.diferencia>0?"+":"")+round2(r.diferencia)+'</span>',
-      '<span class="badge '+estado[1]+'">'+estado[0]+'</span>'
-    ].map(c => "<td>"+c+"</td>").join("");
-    tbody.appendChild(tr);
-  });
+  col.appendChild(inp);
+  return col;
 }
 
 ["filter-articulo","filter-tolerancia","filter-solo-diff"].forEach(id => {
-  $("#"+id).addEventListener("input", renderResultTable);
-  $("#"+id).addEventListener("change", renderResultTable);
+  $("#"+id).addEventListener("input", renderResults);
+  $("#"+id).addEventListener("change", renderResults);
 });
 
 $("#btn-export").addEventListener("click", () => {
@@ -1068,32 +986,47 @@ $("#btn-export").addEventListener("click", () => {
   XLSX.writeFile(wb, "control-stock-"+local.replace(/\s+/g,"-")+"-"+today+".xlsx");
 });
 
-// ---------- navigation ----------
+// ---------- orchestration ----------
 
-function goToStep(n){
-  $$("section.step").forEach((s,i) => s.classList.toggle("active", i===n));
-  $$("nav.steps button").forEach((b,i) => b.classList.toggle("active", i===n));
-  if(n === 1){ renderMappingStep(); updateStep1ReadyState(); }
-  if(n === 2){ buildFactorsTable(); renderFactorsTable(); buildLinkUniverse(); renderLinkTable(); }
-  if(n === 3){ computeResults(); renderResultStep(); }
+$("#btn-calcular").addEventListener("click", () => {
+  const errBox = $("#setup-error");
+  errBox.innerHTML = "";
+  const missing = mappingIsComplete();
+  if(missing.length){
+    errBox.innerHTML = '<div class="warning-box">No pudimos identificar automáticamente: '+missing.map(esc).join(", ")+'. Abrí "Ajustes avanzados" y elegí esas columnas a mano.</div>';
+    $("#advanced-panel").open = true;
+    return;
+  }
+  buildFactorsTable();
+  renderFactorsTable();
+  buildMasterList();
+
+  if(state.reviewQueue.length){
+    renderReview();
+    $("#review-card").hidden = false;
+    $("#results-wrap").hidden = true;
+    $("#review-card").scrollIntoView({behavior:"smooth", block:"start"});
+  } else {
+    showResults();
+  }
+});
+
+$("#btn-confirmar-review").addEventListener("click", () => {
+  $("#review-card").hidden = true;
+  showResults();
+});
+
+function showResults(){
+  computeResults();
+  renderResults();
+  $("#results-wrap").hidden = false;
+  $("#results-wrap").scrollIntoView({behavior:"smooth", block:"start"});
 }
 
-$("#btn-to-step1").addEventListener("click", () => { $$("nav.steps button")[1].disabled = false; goToStep(1); });
-$("#btn-to-step2").addEventListener("click", () => { $$("nav.steps button")[2].disabled = false; goToStep(2); });
-$("#btn-to-step3").addEventListener("click", () => { $$("nav.steps button")[3].disabled = false; goToStep(3); });
-$$("[data-goto]").forEach(b => b.addEventListener("click", () => goToStep(parseInt(b.dataset.goto,10))));
-$$("nav.steps button[data-step]").forEach(b => {
-  b.addEventListener("click", () => { if(!b.disabled) goToStep(parseInt(b.dataset.step,10)); });
-});
-$("#btn-restart").addEventListener("click", () => {
-  if(!confirm("¿Empezar de nuevo? Se perderán los archivos cargados (los vínculos de artículos y el mapeo de columnas quedan guardados).")) return;
-  state.files = {};
-  state.results = null;
-  $$(".file-slot").forEach(slot => { slot.classList.remove("filled"); $(".filename", slot).textContent = ""; });
-  $$("input[type=file]").forEach(inp => inp.value = "");
-  $$("nav.steps button").forEach((b,i) => b.disabled = i>0);
-  $("#btn-to-step1").disabled = true;
-  goToStep(0);
+$("#btn-volver").addEventListener("click", () => {
+  $("#results-wrap").hidden = true;
+  $("#review-card").hidden = true;
+  window.scrollTo({top:0, behavior:"smooth"});
 });
 
 })();
