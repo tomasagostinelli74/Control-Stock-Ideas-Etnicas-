@@ -357,8 +357,13 @@ function parseDate(v){
   return isNaN(dt2.getTime()) ? null : dt2;
 }
 
+const KEG_LITERS = 50; // tamaño de barril de cerveza de canilla en Baum de Lomas (confirmado con el usuario)
+
 function guessPackFactor(unidadText){
   const s = normalize(unidadText);
+  if(s === "litro" || s === "litros") return 1 / KEG_LITERS;
+  // "B50" = un barril de 50 litros ya entregado como 1 unidad -> factor 1 (caso por defecto).
+  // "Unidad" en compras de cerveza de barril suele ser lata suelta (otro artículo, otro código) -> factor 1 también.
   let m = s.match(/(?:pack|caja|bolsa|display|fardo|bandeja)\D{0,8}(\d+)/);
   if(m) return parseInt(m[1],10);
   m = s.match(/x\s*(\d+)/);
@@ -757,7 +762,7 @@ function buildMasterList(){
   const reviewQueue = [];
 
   master.forEach(m => {
-    if(m.incluir === null) m.incluir = !m.esBarrilGuess;
+    if(m.incluir === null) m.incluir = true; // todo lo que está en Stock Inicial se controla, barril incluido
     if(!m.incluir) return;
 
     [["compras", comprasDistinct, "comprasNames", "reviewedCompras"],
@@ -859,7 +864,7 @@ function computeResults(){
     ventasInRange.forEach(r => { if(m.ventasNames.has(normalize(r.articulo))) ventas += r.cantidad; });
     const teorico = m.stockInicial + compras - ventas;
     const diferencia = m.stockFinal - teorico;
-    rows.push({ key:m.key, codigo:m.codigo, articulo:m.nombre, stockInicial:m.stockInicial, compras, ventas, teorico, stockFinal:m.stockFinal, diferencia });
+    rows.push({ key:m.key, codigo:m.codigo, articulo:m.nombre, esBarrilGuess:m.esBarrilGuess, stockInicial:m.stockInicial, compras, ventas, teorico, stockFinal:m.stockFinal, diferencia });
   });
   rows.sort((a,b) => Math.abs(b.diferencia) - Math.abs(a.diferencia) || a.articulo.localeCompare(b.articulo));
   state.results = rows;
@@ -895,7 +900,7 @@ function renderResults(){
     const estado = Math.abs(r.diferencia) <= tol ? ["OK","ok","✓"] : (r.diferencia < 0 ? ["Faltante","bad","▼"] : ["Sobrante","warn","▲"]);
     const diffClass = Math.abs(r.diferencia) <= tol ? "diff-zero" : (r.diferencia < 0 ? "diff-neg" : "diff-pos");
     tr.innerHTML = [
-      esc(r.articulo) + (r.codigo ? ' <span class="code-cell">'+esc(r.codigo)+'</span>' : ''),
+      esc(r.articulo) + (r.esBarrilGuess ? ' <span class="badge neutral" title="Se mide en barriles/litros — revisá el factor de conversión de Compras">🛢</span>' : '') + (r.codigo ? ' <span class="code-cell">'+esc(r.codigo)+'</span>' : ''),
       round2(r.stockInicial), round2(r.compras), round2(r.ventas), round2(r.teorico), round2(r.stockFinal),
       '<span class="'+diffClass+'">'+(r.diferencia>0?"+":"")+round2(r.diferencia)+'</span>',
       '<span class="badge '+estado[1]+'">'+estado[2]+' '+estado[0]+'</span>',
